@@ -13,10 +13,19 @@ import { faArrowRight, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [cart, setCart] = useState([]);
   const { totalProducts } = useLoaderData();
 
-  console.log(totalProducts);
+  const totalPages = Math.ceil(totalProducts / itemsPerPage);
+
+  // const pageNumbers = [];
+  // for (let i = 1; i <= totalPages; i++) {
+  //     pageNumbers.push(i);
+  // }
+
+  const pageNumbers = [...Array(totalPages).keys()];
 
   /**
    * Done: 1. Determine the total number of items:
@@ -77,27 +86,58 @@ const Shop = () => {
     deleteShoppingCart();
   };
 
+  const options = [5, 10, 20];
+  function handleSelectChange(event) {
+    setItemsPerPage(parseInt(event.target.value));
+    setCurrentPage(0);
+  }
+
   return (
-    <div className="shop-container">
-      <div className="products-container">
-        {products.map((product) => (
-          <Product
-            key={product._id}
-            product={product}
-            handleAddToCart={handleAddToCart}
-          ></Product>
+    <>
+      <div className="shop-container">
+        <div className="products-container">
+          {products.map((product) => (
+            <Product
+              key={product._id}
+              product={product}
+              handleAddToCart={handleAddToCart}
+            ></Product>
+          ))}
+        </div>
+        <div className="cart-container">
+          <Cart cart={cart} handleClearCart={handleClearCart}>
+            <Link className="proceed-link" to="/orders">
+              <button className="btn-proceed">
+                Review Order <FontAwesomeIcon icon={faArrowRight} />
+              </button>
+            </Link>
+          </Cart>
+        </div>
+      </div>
+      {/* pagination */}
+      <div className="pagination">
+        <p>
+          current Page: {currentPage} and items per page: {itemsPerPage}
+        </p>
+        {pageNumbers.map((number) => (
+          <button
+            onClick={() => setCurrentPage(number)}
+            className={currentPage === number ? "selected" : ""}
+            key={number}
+          >
+            {number}
+          </button>
         ))}
+
+        <select value={itemsPerPage} onChange={handleSelectChange}>
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
       </div>
-      <div className="cart-container">
-        <Cart cart={cart} handleClearCart={handleClearCart}>
-          <Link className="proceed-link" to="/orders">
-            <button className="btn-proceed">
-              Review Order <FontAwesomeIcon icon={faArrowRight} />
-            </button>
-          </Link>
-        </Cart>
-      </div>
-    </div>
+    </>
   );
 };
 
