@@ -7,13 +7,24 @@ import {
 import Cart from "../Cart/Cart";
 import Product from "../Product/Product";
 import "./Shop.css";
-import { Link } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
+  const { totalProducts } = useLoaderData();
+
+  console.log(totalProducts);
+
+  /**
+   * Done: 1. Determine the total number of items:
+   * TODO: 2. Decide on the number of items per page:
+   * DONE: 3. Calculate the total number of pages:
+   * DONE: 4. Determine the current page:
+   *
+   */
 
   useEffect(() => {
     fetch("http://localhost:5000/products")
